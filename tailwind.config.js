@@ -7,14 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        light: {
+        'light': {
           'very-light-gray': 'hsl(0, 0%, 98%)',
           'very-light-grayish-blue': 'hsl(236, 33%, 92%)',
           'light-grayish-blue': 'hsl(233, 11%, 84%)',
           'dark-grayish-blue': 'hsl(236, 9%, 61%)',
           'very-dark-grayish-blue': 'hsl(235, 19%, 35%)'
         },
-        dark: {
+        'dark': {
           'very-dark-blue': 'hsl(235, 21%, 11%)',
           'very-dark-desaturated-blue': 'hsl(235, 24%, 19%)',
           'light-grayish-blue': 'hsl(234, 39%, 85%)',
@@ -34,6 +34,12 @@ export default {
       },
       screens: {
         'mobile': '375px'
+      },
+      backgroundImage: {
+        'dark-desktop': "url('./src/assets/images/bg-desktop-dark.jpg')",
+        'dark-mobile': "url('./src/assets/images/bg-mobile-dark.jpg')",
+        'light-desktop': "url('./src/assets/images/bg-desktop-light.jpg')",
+        'light-mobile': "url('./src/assets/images/bg-mobile-light.jpg')"
       }
     },
   },

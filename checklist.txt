@@ -1,0 +1,2 @@
+- finish static page;
+- next feature: Supporting system preference and manual selection for dark and light mode (https://tailwindcss.com/docs/dark-mode), see tailwind config.
