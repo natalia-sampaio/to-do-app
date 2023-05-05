@@ -1,0 +1,19 @@
+<script setup>
+import { ref } from 'vue';
+
+const checked = ref(false);
+
+defineProps({
+    content: String,
+    id: Number
+})
+</script>
+
+<template>
+    <div class="p-4 border-b border-dark-very-dark-grayish-blue flex items-center">
+        <input type="checkbox" class="indeterminate:bg-dark-very-dark-desaturated-blue checkbox checkbox-xs"
+        aria-label="checkbox"
+        v-model="checked">
+        <label class="bg-dark-very-dark-desaturated-blue text-dark-dark-grayish-blue pl-2" :class="{ 'line-through': checked }">{{ content }}</label>
+    </div>
+</template>

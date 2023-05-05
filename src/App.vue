@@ -8,7 +8,7 @@ const todoStore = useTodoStore();
 </script>
 
 <template>
-  <header class="p-4 bg-dark-mobile bg-no-repeat text-center">
+  <header class="p-4 bg-dark-mobile bg-no-repeat bg-cover text-center">
     <div class="my-8 flex items-center justify-between">
       <h1 class="text-white font-bold text-2xl">T O D O</h1>
       <IconSun />
@@ -17,8 +17,8 @@ const todoStore = useTodoStore();
       <input type="checkbox" class="indeterminate:bg-dark-very-dark-desaturated-blue checkbox checkbox-xs" aria-label="checkbox">
       <input 
       v-model="todoStore.newItem" 
-      @blur="todoStore.addTodo"
-      @keyup.enter="todoStore.addTodo" 
+      @blur="todoStore.addTodo()"
+      @keyup.enter="todoStore.addTodo()"
       type="text" 
       placeholder="Create a new todo..." 
       aria-label="Create a new task"
@@ -26,5 +26,7 @@ const todoStore = useTodoStore();
     </div>
   </header>
 
-  <HomeView v-for="{id, content} in todos" :key="id" :content="content"  />
+  <div class="rounded bg-dark-very-dark-desaturated-blue mx-4 -mt-6 border-b-0">
+    <HomeView />
+  </div>
 </template>
