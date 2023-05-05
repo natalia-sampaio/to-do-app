@@ -9,6 +9,8 @@ const todoStore = useTodoStore();
 <template>
   <main class="rounded bg-dark-very-dark-desaturated-blue mx-4 -mt-6 border-b-0">
     <TodoItem v-for="{ id, content } in todoStore.todos" :key="id" :content="content" :id="id" />
-    <TodoFooter  :numberOfUncheckedItems="todoStore.todoLength" />
+    <TodoFooter 
+    :numberOfUncheckedItems="todoStore.numberOfUncheckedItems"
+    :todoLength="todoStore.todoLength" />
   </main>
 </template>

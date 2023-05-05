@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import { useTodoStore } from '../stores/todo';
+
+const todoStore = useTodoStore();
 
 const checked = ref(false);
 
@@ -13,7 +16,8 @@ defineProps({
     <div class="p-4 border-b border-dark-very-dark-grayish-blue flex items-center">
         <input type="checkbox" class="indeterminate:bg-dark-very-dark-desaturated-blue checkbox checkbox-xs"
         aria-label="checkbox"
-        v-model="checked">
+        v-model="checked"
+        @change="todoStore.addCompleted(id)">
         <label class="bg-dark-very-dark-desaturated-blue text-dark-dark-grayish-blue pl-2" :class="{ 'line-through': checked }">{{ content }}</label>
     </div>
 </template>

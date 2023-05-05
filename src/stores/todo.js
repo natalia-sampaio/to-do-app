@@ -9,7 +9,11 @@ export const useTodoStore = defineStore('todo', {
     }
   },
   getters: {
-    todoLength: (state) => state.todos.length
+    todoLength: (state) => state.todos.length,
+    completedLength: (state) => state.completedItems.length,
+    numberOfUncheckedItems()  {
+      return this.todoLength - this.completedLength
+    }
   },
   actions: {
     addTodo() {
@@ -17,6 +21,9 @@ export const useTodoStore = defineStore('todo', {
         this.todos.push({id: this.todoLength +1, content: this.newItem});
       }
       this.newItem = '';
+    },
+    addCompleted(id) {
+      this.completedItems.push(id)
     },
     clearCompleted(id) {
       const itemToBeDeleted = this.todos.findIndex(element => element.id === id);
