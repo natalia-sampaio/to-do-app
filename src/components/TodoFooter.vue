@@ -1,4 +1,8 @@
 <script setup>
+import { useTodoStore } from '../stores/todo';
+
+const todoStore = useTodoStore();
+
 defineProps({
     numberOfUncheckedItems: Number,
     todoLength: Number
@@ -8,6 +12,6 @@ defineProps({
 <template>
     <div v-if="todoLength > 0" class="flex items-center justify-between p-4">
         <span>{{ numberOfUncheckedItems }} items left</span>
-        <button>Clear Completed</button>
+        <button @click="todoStore.clearCompleted">Clear Completed</button>
     </div>
 </template>

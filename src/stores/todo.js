@@ -14,6 +14,7 @@ export const useTodoStore = defineStore('todo', {
     numberOfUncheckedItems()  {
       return this.todoLength - this.completedLength
     }
+
   },
   actions: {
     addTodo() {
@@ -22,17 +23,22 @@ export const useTodoStore = defineStore('todo', {
       }
       this.newItem = '';
     },
-    addCompleted(id) {
-      this.completedItems.push(id)
-    },
-    clearCompleted(id) {
-      const itemToBeDeleted = this.todos.findIndex(element => element.id === id);
+    updateCompleted(id) {
+      const existingItem = this.completedItems.find(element => element.id === id);
 
-      const existingItem = this.todos.find(element => element.id === id);
-
-      if(existingItem){
-        this.todos.splice(itemToBeDeleted, 1);
+      if(existingItem) {
+        this.completedItems.splice(this.completedItems.findIndex(element => element.id === id), 1);
+        return;
       }
+
+      this.completedItems.push({id: id});
+
+    }, 
+    clearCompleted() {
+      const itemsToBeRemoved = this.completedItems.forEach(item => this.todos.find(element => element.id === item.id));
+
+      this.todos.splice(this.todos.findIndex(element => element.id === itemsToBeRemoved.id), 1);
     }
+    
   }
 })
