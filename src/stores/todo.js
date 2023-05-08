@@ -31,13 +31,12 @@ export const useTodoStore = defineStore('todo', {
         return;
       }
 
-      this.completedItems.push({id: id});
+      this.completedItems.push(this.todos.find(element => element.id === id));
 
     }, 
     clearCompleted() {
-      const itemsToBeRemoved = this.completedItems.forEach(item => this.todos.find(element => element.id === item.id));
-
-      this.todos.splice(this.todos.findIndex(element => element.id === itemsToBeRemoved.id), 1);
+      this.todos = this.todos.filter((element) => !this.completedItems.includes(element));
+      this.completedItems = [];
     }
     
   }
