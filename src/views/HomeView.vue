@@ -24,7 +24,7 @@ const todoStore = useTodoStore();
           :todoLength="todoStore.todoLength" />
         </div>
       </div>
-      <TodoFilter :todoLength="todoStore.todoLength" />
+      <TodoFilter />
     </div>
   </div>
 </template>

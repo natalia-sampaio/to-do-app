@@ -3,13 +3,10 @@ import { useTodoStore } from '../stores/todo';
 
 const todoStore = useTodoStore();
 
-defineProps({
-    todoLength: Number
-})
 </script>
 
 <template>
-    <div v-if="todoLength > 0" class="
+    <div v-if="todoStore.todoLength > 0" class="
         rounded 
         bg-light-very-light-gray dark:bg-dark-very-dark-desaturated-blue 
         mx-4 mt-6

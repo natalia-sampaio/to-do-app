@@ -3,12 +3,11 @@ import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
 import HomeView from './views/HomeView.vue';
 import { useTodoStore } from './stores/todo.js'
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const todoStore = useTodoStore();
 
-const dark = ref(true);
-
+const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
 </script>
 
 <template>
