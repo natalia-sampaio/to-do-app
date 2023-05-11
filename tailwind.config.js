@@ -6,6 +6,7 @@ export default {
   ],
   theme: {
     extend: {
+      
       colors: {
         'light': {
           'very-light-gray': 'hsl(0, 0%, 98%)',
@@ -36,12 +37,11 @@ export default {
         'mobile': '375px'
       },
       backgroundImage: {
-        'dark-desktop': "url('./src/assets/images/bg-desktop-dark.jpg')",
-        'dark-mobile': "url('./src/assets/images/bg-mobile-dark.jpg')",
-        'light-desktop': "url('./src/assets/images/bg-desktop-light.jpg')",
-        'light-mobile': "url('./src/assets/images/bg-mobile-light.jpg')"
+        'dark': "url('./src/assets/images/bg-dark.svg')",
+        'light': "url('./src/assets/images/bg-light.svg')"
       }
     },
   },
+  darkMode: 'class',
   plugins: [require("daisyui")],
 }
