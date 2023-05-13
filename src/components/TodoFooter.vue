@@ -1,5 +1,6 @@
 <script setup>
 import { useTodoStore } from '../stores/todo';
+import Filter from './Filter.vue';
 
 const todoStore = useTodoStore();
 

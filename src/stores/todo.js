@@ -12,7 +12,7 @@ export const useTodoStore = defineStore('todo', {
     }
   },
   getters: {
-    todoLength: (state) => state.todos.length,
+    todoLength: (state) => state.allItems.length,
     completedLength: (state) => state.completedItems.length,
     numberOfUncheckedItems()  {
       return this.todoLength - this.completedLength
