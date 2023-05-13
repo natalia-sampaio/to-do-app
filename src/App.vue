@@ -3,7 +3,7 @@ import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
 import HomeView from './views/HomeView.vue';
 import { useTodoStore } from './stores/todo.js'
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 const todoStore = useTodoStore();
 

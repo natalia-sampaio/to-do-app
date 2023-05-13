@@ -1,10 +1,15 @@
 <script setup>
 import TodoFooter from '../components/TodoFooter.vue';
 import TodoItem from '../components/TodoItem.vue';
-import TodoFilter from '../components/TodoFilter.vue';
+import Filter from '../components/Filter.vue';
 import { useTodoStore } from '../stores/todo.js'
+import { onMounted } from 'vue';
 
 const todoStore = useTodoStore();
+
+onMounted(() => {
+  todoStore.showAll();
+})
 </script>
 
 <template>
@@ -18,13 +23,13 @@ const todoStore = useTodoStore();
       mx-4
       rounded border-b-0 drop-shadow-lg">
         <div class="rounded bg-light-very-light-gray dark:bg-dark-very-dark-desaturated-blue mx-4 border-b-0">
-          <TodoItem v-for="{ id, content } in todoStore.todos" :key="id" :content="content" :id="id" />
+          <TodoItem v-for="todo in todoStore.todos" :key="todo.id" :content="todo.content" :id="todo.id" :checked="todo.checked" @change="todoStore.updateCompleted(todo.id)" />
           <TodoFooter 
           :numberOfUncheckedItems="todoStore.numberOfUncheckedItems" 
           :todoLength="todoStore.todoLength" />
         </div>
       </div>
-      <TodoFilter />
+      <Filter />
     </div>
   </div>
 </template>
