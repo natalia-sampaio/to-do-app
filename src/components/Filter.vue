@@ -8,7 +8,7 @@ const todoStore = useTodoStore();
     <div v-if="todoStore.allItems.length > 0" class="
         rounded 
         bg-light-very-light-gray dark:bg-dark-very-dark-desaturated-blue 
-        mx-4 mt-6 sm:mx-auto
+        mt-6 sm:mx-auto
         p-4 sm:p-0
         sm:w-fit
         sm:relative sm:-top-[72px]
