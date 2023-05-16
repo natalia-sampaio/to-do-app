@@ -55,6 +55,7 @@ export const useTodoStore = defineStore('todo', {
     },
     clearCompleted() {
       this.allItems = this.allItems.filter((element) => !this.completedItems.includes(element));
+      this.todos = this.allItems;
       this.completedItems = [];
     },
     showAll() {

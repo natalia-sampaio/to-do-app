@@ -1,6 +1,5 @@
 <script setup>
 import { useTodoStore } from '../stores/todo';
-import Filter from './Filter.vue';
 
 const todoStore = useTodoStore();
 
@@ -13,6 +12,6 @@ defineProps({
 <template>
     <div v-if="todoLength > 0" class="flex items-center justify-between p-4">
         <span>{{ numberOfUncheckedItems }} items left</span>
-        <button @click="todoStore.clearCompleted">Clear Completed</button>
+        <button v-if="todoStore.filter != 'active'" @click="todoStore.clearCompleted">Clear Completed</button>
     </div>
 </template>
