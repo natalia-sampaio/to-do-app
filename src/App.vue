@@ -21,7 +21,7 @@ const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
           <div class="flex items-center">
             <IconSun v-if="dark" @click="dark = !dark" />
             <IconMoon v-else @click="dark = !dark" />
-            <LoginModal />
+            <LoginModal :dark="dark"/>
           </div>
         </div>
         <div class="rounded bg-light-very-light-gray dark:bg-dark-very-dark-desaturated-blue p-4 mb-6 w-full flex items-center justify-start">

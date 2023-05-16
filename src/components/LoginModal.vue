@@ -3,6 +3,8 @@ import { computed, reactive } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, email } from '@vuelidate/validators';
 
+defineProps({ dark: Boolean })
+
 const formData = reactive({
     email: "",
     password: ""
@@ -39,9 +41,9 @@ const googleSignIn = () => {
 </script>
 
 <template>
-    <label for="my-modal" class="btn ml-4">login</label>
+    <label for="my-modal" class="btn ml-4" :data-theme="dark ? 'dark' : 'aqua'">login</label>
     <input type="checkbox" id="my-modal" class="modal-toggle" />
-    <div class="modal modal-bottom sm:modal-middle">
+    <div class="modal modal-bottom sm:modal-middle" :data-theme="dark ? 'dark' : 'aqua'">
         <div class="modal-box">
             <div class="form-control w-full">
                 <label class="label">
