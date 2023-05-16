@@ -27,10 +27,14 @@ const submitForm = async () => {
     const result = await v$.value.$validate();
     if (result) {
         //handle login with firebase
-        console.log('logged')
+        alert('you will be able to login soon :)')
         return
     }
     console.log('error')
+}
+
+const googleSignIn = () => {
+    alert('you will be able to login with a google account soon :)')
 }
 </script>
 
@@ -56,7 +60,7 @@ const submitForm = async () => {
                 </label>
             </div>
             <div class="modal-action justify-between">
-                <label for="my-modal" class="btn">Sign in with Google</label>
+                <label for="my-modal" class="btn" @click="googleSignIn">Sign in with Google</label>
                 <label class="btn" @click="submitForm">Sign in with email</label>
             </div>
         </div>
