@@ -37,8 +37,8 @@ export default {
         'mobile': '375px'
       },
       backgroundImage: {
-        'dark': "url('./src/assets/images/bg-dark.svg')",
-        'light': "url('./src/assets/images/bg-light.svg')"
+        'dark': "url('./public/bg-dark.svg')",
+        'light': "url('./public/bg-light.svg')"
       }
     },
   },
