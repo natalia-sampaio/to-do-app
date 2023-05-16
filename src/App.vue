@@ -25,12 +25,12 @@ const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
             <div class="modal modal-bottom sm:modal-middle">
               <div class="modal-box">
                 <div class="form-control w-full max-w-xs">
-                  <FormItem label="Name" errorMessage="error" />
                   <FormItem label="Email" errorMessage="error" />
                   <FormItem label="Password" errorMessage="error" />
                 </div>
-                <div class="modal-action">
-                  <label for="my-modal" class="btn">Yay!</label>
+                <div class="modal-action justify-between">
+                  <label for="my-modal" class="btn">Sign in with Google</label>
+                  <label for="my-modal" class="btn">Sign in with email</label>
                 </div>
               </div>
             </div>
