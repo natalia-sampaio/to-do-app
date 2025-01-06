@@ -2,8 +2,19 @@
 import { computed, reactive } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, email } from '@vuelidate/validators';
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+    signInWithPopup
+} from 'firebase/auth';
+import { useUserStore } from '../stores/user';
+import { ref } from 'firebase/storage';
+import { useRouter } from 'vue-router';
 
 defineProps({ dark: Boolean });
+
+const userStore = useUserStore();
 
 const formData = reactive({
     email: '',
@@ -23,33 +34,80 @@ const rules = computed(() => {
     };
 });
 
+const $externalResults = ref({});
+
 const v$ = useVuelidate(rules, formData);
 
-const submitForm = async () => {
-    const result = await v$.value.$validate();
-    if (result) {
-        //handle login with firebase
-        alert('you will be able to login soon :)');
-        return;
-    }
-    console.log('error');
-};
+const router = useRouter();
 
-const googleSignIn = () => {
-    alert('you will be able to login with a google account soon :)');
-};
+async function submitForm() {
+    $externalResults.value = {};
+    const result = await v$.value.$validate();
+
+    if (result) {
+        userStore.$patch({
+            name: formData.name,
+            email: formData.email
+        });
+        signInWithEmailAndPassword(getAuth(), formData.email, formData.password)
+            .then(() => {
+                router.push('/logged-in');
+            })
+            .catch((error) => {
+                animateButton();
+                if (error.code == 'auth/user-not-found') {
+                    $externalResults.value = { email: 'User not found, please register.' };
+                }
+                if (error.code == 'auth/wrong-password') {
+                    $externalResults.value = { email: 'User and/or password are incorrect' };
+                }
+            });
+    } else {
+        animateButton();
+        router.push('/sign-in');
+    }
+}
+
+function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(getAuth(), provider)
+        .then(() => {
+            router.push('/logged-in');
+        })
+        .catch((error) => {
+            animateButton();
+            if (error.code == 'auth/user-not-found') {
+                $externalResults.value = { email: 'User not found, please register.' };
+            }
+            if (error.code == 'auth/wrong-password') {
+                $externalResults.value = { email: 'User and/or password are incorrect' };
+            }
+        });
+}
+
+const warn = ref(false);
+
+function animateButton() {
+    warn.value = true;
+    setTimeout(() => {
+        warn.value = false;
+    }, 1500);
+}
 </script>
 
 <template>
-    <label for="my-modal" class="btn ml-4" :data-theme="dark ? 'dark' : 'aqua'">sign in</label>
-    <input type="checkbox" id="my-modal" class="modal-toggle" />
+    <label for="signin-modal" class="btn" :data-theme="dark ? 'dark' : 'aqua'">sign in</label>
+    <input type="checkbox" id="signin-modal" class="modal-toggle" />
     <div
         class="modal modal-bottom sm:modal-middle"
         role="dialog"
         :data-theme="dark ? 'dark' : 'aqua'"
     >
         <div class="modal-box">
-            <label for="my-modal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <label
+                for="signin-modal"
+                class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
                 ✕
             </label>
             <div class="form-control w-full">
@@ -89,7 +147,9 @@ const googleSignIn = () => {
                 </label>
             </div>
             <div class="modal-action justify-between">
-                <label for="my-modal" class="btn" @click="googleSignIn">Sign up with Google</label>
+                <label for="signin-modal" class="btn" @click="signInWithGoogle"
+                    >Sign in with Google</label
+                >
                 <label class="btn" @click="submitForm">Sign in with email</label>
             </div>
         </div>
