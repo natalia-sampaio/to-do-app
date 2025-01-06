@@ -11,7 +11,6 @@ import {
     GoogleAuthProvider,
     signInWithPopup
 } from 'firebase/auth';
-defineProps({ dark: Boolean });
 
 const userStore = useUserStore();
 
@@ -112,15 +111,9 @@ function animateButton() {
 </script>
 
 <template>
-    <label for="signup-modal" class="btn btn-outline" :data-theme="dark ? 'dark' : 'aqua'"
-        >sign up</label
-    >
+    <label for="signup-modal" class="btn btn-primary btn-outline">sign up</label>
     <input type="checkbox" id="signup-modal" class="modal-toggle" />
-    <div
-        class="modal modal-bottom sm:modal-middle"
-        role="dialog"
-        :data-theme="dark ? 'dark' : 'aqua'"
-    >
+    <div class="modal modal-bottom sm:modal-middle" role="dialog">
         <div class="modal-box">
             <label
                 for="signup-modal"

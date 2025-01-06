@@ -12,8 +12,6 @@ import { useUserStore } from '../stores/user';
 import { ref } from 'firebase/storage';
 import { useRouter } from 'vue-router';
 
-defineProps({ dark: Boolean });
-
 const userStore = useUserStore();
 
 const formData = reactive({
@@ -96,13 +94,9 @@ function animateButton() {
 </script>
 
 <template>
-    <label for="signin-modal" class="btn" :data-theme="dark ? 'dark' : 'aqua'">sign in</label>
+    <label for="signin-modal" class="btn btn-primary">sign in</label>
     <input type="checkbox" id="signin-modal" class="modal-toggle" />
-    <div
-        class="modal modal-bottom sm:modal-middle"
-        role="dialog"
-        :data-theme="dark ? 'dark' : 'aqua'"
-    >
+    <div class="modal modal-bottom sm:modal-middle" role="dialog">
         <div class="modal-box">
             <label
                 for="signin-modal"
