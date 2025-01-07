@@ -2,14 +2,14 @@
 import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
 import IconSignOut from './components/icons/IconSignOut.vue';
-import HomeView from './views/HomeView.vue';
 import { useTodoStore } from './stores/todo.js';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import SignInModal from './components/SignInModal.vue';
 import SignUpModal from './components/SignUpModal.vue';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import { useUserStore } from './stores/user.js';
+import TodoList from './components/TodoList.vue';
 
 const todoStore = useTodoStore();
 const userStore = useUserStore();
@@ -18,24 +18,21 @@ const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
 const router = useRouter();
 
-let auth;
+let auth = getAuth();
 
-onMounted(() => {
-    auth = getAuth();
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            userStore.isLoggedIn = true;
-            userStore.uid = user.uid;
-            userStore.getUserInformation;
-        } else {
-            userStore.isLoggedIn = false;
-        }
-    });
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        userStore.isLoggedIn = true;
+        userStore.uid = user.uid;
+        userStore.getUserInformation;
+    } else {
+        userStore.isLoggedIn = false;
+    }
 });
 
 function handleSignOut() {
     signOut(auth).then(() => {
+        todoStore.resetStore;
         router.push('/');
     });
 }
@@ -48,7 +45,9 @@ function handleSignOut() {
                 <div class="my-8 flex items-center justify-between">
                     <h1 class="font-bold text-2xl">T O D O</h1>
                     <div class="flex items-center gap-4">
-                        <span class="text-xl">Olá, {{ userStore.name }}</span>
+                        <span v-if="userStore.isLoggedIn" class="text-xl">
+                            Olá, {{ userStore.name }}
+                        </span>
 
                         <label class="swap swap-rotate">
                             <input
@@ -61,8 +60,8 @@ function handleSignOut() {
 
                             <IconMoon class="swap-on h-7 w-7" />
                         </label>
-
                         <SignInModal v-if="!userStore.isLoggedIn" />
+
                         <SignUpModal v-if="!userStore.isLoggedIn" />
 
                         <button
@@ -88,6 +87,21 @@ function handleSignOut() {
                 </div>
             </div>
         </header>
-        <HomeView />
+        <TodoList />
     </div>
 </template>
+<style>
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+</style>

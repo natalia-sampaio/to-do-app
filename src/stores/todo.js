@@ -145,6 +145,14 @@ export const useTodoStore = defineStore('todo', {
             } catch (error) {
                 console.error('Error updating Firestore:', error);
             }
+        },
+        resetStore() {
+            this.todos = [];
+            this.allItems = [];
+            this.activeItems = [];
+            this.completedItems = [];
+            this.newItem = '';
+            this.filter = 'all';
         }
     }
 });
