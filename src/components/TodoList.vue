@@ -2,13 +2,9 @@
 import TodoFooter from '../components/TodoFooter.vue';
 import TodoItem from '../components/TodoItem.vue';
 import { useTodoStore } from '../stores/todo.js';
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 
 const todoStore = useTodoStore();
-
-onMounted(() => {
-    todoStore.showAll();
-});
 
 const filteredTodos = computed(() => {
     switch (todoStore.filter) {

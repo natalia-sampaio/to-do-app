@@ -8,11 +8,8 @@ import {
     signInWithEmailAndPassword,
     signInWithPopup
 } from 'firebase/auth';
-import { useUserStore } from '../stores/user';
 import { ref } from 'firebase/storage';
 import { useRouter } from 'vue-router';
-
-const userStore = useUserStore();
 
 const formData = reactive({
     email: '',
@@ -43,10 +40,6 @@ async function submitForm() {
     const result = await v$.value.$validate();
 
     if (result) {
-        userStore.$patch({
-            name: formData.name,
-            email: formData.email
-        });
         signInWithEmailAndPassword(getAuth(), formData.email, formData.password)
             .then(() => {
                 router.push('/logged-in');

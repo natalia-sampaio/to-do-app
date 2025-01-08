@@ -1,18 +1,20 @@
 <script setup>
 import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
-import IconSignOut from './components/icons/IconSignOut.vue';
 import { useTodoStore } from './stores/todo.js';
-import { ref } from 'vue';
-import SignInModal from './components/SignInModal.vue';
-import SignUpModal from './components/SignUpModal.vue';
+import { ref, shallowRef, watch } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import { useUserStore } from './stores/user.js';
 import TodoList from './components/TodoList.vue';
+import HeaderLoggedOut from './components/header/HeaderLoggedOut.vue';
+import HeaderLoggedIn from './components/header/HeaderLoggedIn.vue';
+import SlideFade from './components/transitions/SlideFade.vue';
 
 const todoStore = useTodoStore();
 const userStore = useUserStore();
+
+const activeHeader = shallowRef(userStore.isLoggedIn ? HeaderLoggedIn : HeaderLoggedOut);
 
 const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
@@ -32,10 +34,17 @@ onAuthStateChanged(auth, (user) => {
 
 function handleSignOut() {
     signOut(auth).then(() => {
-        todoStore.resetStore;
+        todoStore.resetStore();
         router.push('/');
     });
 }
+
+watch(
+    () => userStore.isLoggedIn,
+    (isLoggedIn) => {
+        activeHeader.value = isLoggedIn ? HeaderLoggedIn : HeaderLoggedOut;
+    }
+);
 </script>
 
 <template>
@@ -43,12 +52,8 @@ function handleSignOut() {
         <header class="p-4 sm:p-8 bg-neutral">
             <div class="lg:max-w-3xl mx-auto">
                 <div class="my-8 flex items-center justify-between">
-                    <h1 class="font-bold text-2xl">T O D O</h1>
-                    <div class="flex items-center gap-4">
-                        <span v-if="userStore.isLoggedIn" class="text-xl">
-                            Olá, {{ userStore.name }}
-                        </span>
-
+                    <div class="flex gap-4">
+                        <h1 class="font-bold text-2xl">T O D O</h1>
                         <label class="swap swap-rotate">
                             <input
                                 type="checkbox"
@@ -60,18 +65,14 @@ function handleSignOut() {
 
                             <IconMoon class="swap-on h-7 w-7" />
                         </label>
-                        <SignInModal v-if="!userStore.isLoggedIn" />
-
-                        <SignUpModal v-if="!userStore.isLoggedIn" />
-
-                        <button
-                            v-if="userStore.isLoggedIn"
-                            class="btn btn-primary btn-circle"
-                            @click="handleSignOut()"
-                        >
-                            <IconSignOut class="h-6 w-6" />
-                        </button>
                     </div>
+                    <SlideFade>
+                        <component
+                            :is="activeHeader"
+                            @signOut="handleSignOut()"
+                            :name="userStore.name"
+                        />
+                    </SlideFade>
                 </div>
                 <div class="input p-4 mb-6 w-full flex items-center justify-start">
                     <input type="checkbox" class="checkbox checkbox-xs" aria-label="checkbox" />
@@ -90,18 +91,3 @@ function handleSignOut() {
         <TodoList />
     </div>
 </template>
-<style>
-.slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-    transform: translateX(20px);
-    opacity: 0;
-}
-</style>

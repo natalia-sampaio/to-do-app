@@ -9,7 +9,8 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    updateProfile
 } from 'firebase/auth';
 
 const userStore = useUserStore();
@@ -51,17 +52,16 @@ const router = useRouter();
 async function submitForm() {
     const result = await v$.value.$validate();
     if (result) {
-        userStore.$patch({
-            name: formData.name,
-            email: formData.email
-        });
-        createUserWithEmailAndPassword(getAuth(), formData.email, formData.password)
-            .then((data) => {
-                const user = data.user;
-                userStore.name = user.name;
-                userStore.email = user.email;
-                userStore.uid = user.uid;
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            .then(async (data) => {
+                await updateProfile(data.user, { displayName: formData.name });
+
+                userStore.name = formData.name;
+                userStore.email = data.user.email;
+                userStore.uid = data.user.uid;
                 userStore.addToFirestore();
+
                 //router.push('/logged-in');
             })
             .catch((error) => {
