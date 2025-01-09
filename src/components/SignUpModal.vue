@@ -1,7 +1,7 @@
 <script setup>
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, email, sameAs } from '@vuelidate/validators';
-import { reactive, computed } from 'vue';
+import { reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user.js';
@@ -65,7 +65,12 @@ async function submitForm() {
                 //router.push('/logged-in');
             })
             .catch((error) => {
-                alert(error.message);
+                if (error.message == 'Firebase: Error (auth/email-already-in-use).') {
+                    $externalResults.value = { email: 'E-mail already in use, please sign in' };
+                } else {
+                    alert(error.message);
+                    console.log(error);
+                }
             });
     } else {
         animateButton();
@@ -108,6 +113,15 @@ function animateButton() {
         warn.value = false;
     }, 1500);
 }
+
+watch(
+    () => formData.email,
+    (newEmail) => {
+        if (newEmail) {
+            $externalResults.value.email = '';
+        }
+    }
+);
 </script>
 
 <template>
@@ -132,7 +146,7 @@ function animateButton() {
                     class="input input-bordered w-full"
                     aria-label="name input"
                 />
-                <label v-for="error in v$.name.$errors" :key="error.$uid" class="text-red-600">{{
+                <label v-for="error in v$.name.$errors" :key="error.$uid" class="text-error">{{
                     error.$message
                 }}</label>
                 <label class="label">
@@ -145,9 +159,13 @@ function animateButton() {
                     class="input input-bordered w-full"
                     aria-label="email input"
                 />
-                <label v-for="error in v$.email.$errors" :key="error.$uid" class="text-red-600"
+                <label v-for="error in v$.email.$errors" :key="error.$uid" class="text-error"
                     >{{ error.$message }}
                 </label>
+                <label v-if="$externalResults.email" class="text-error">
+                    {{ $externalResults.email }}
+                </label>
+
                 <label class="label">
                     <span class="label-text">Password</span>
                 </label>
@@ -158,7 +176,7 @@ function animateButton() {
                     class="input input-bordered w-full"
                     aria-label="password input"
                 />
-                <label v-for="error in v$.password.$errors" :key="error.$uid" class="text-red-600"
+                <label v-for="error in v$.password.$errors" :key="error.$uid" class="text-error"
                     >{{ error.$message }}
                 </label>
                 <label class="label">
@@ -174,7 +192,7 @@ function animateButton() {
                 <label
                     v-for="error in v$.confirmPassword.$errors"
                     :key="error.$uid"
-                    class="text-red-600"
+                    class="text-error"
                     >{{ error.$message }}
                 </label>
             </div>
