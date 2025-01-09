@@ -20,7 +20,15 @@ export const useTodoStore = defineStore('todo', {
         numberOfUncheckedItems() {
             return this.todoLength - this.completedLength;
         },
-        async getUserTodoList() {
+        isLoggedIn() {
+            return useUserStore().isLoggedIn;
+        },
+        uid() {
+            return useUserStore().uid;
+        }
+    },
+    actions: {
+        async fetchUserTodoList() {
             if (!this.isLoggedIn || !this.uid) return;
 
             try {
@@ -45,14 +53,6 @@ export const useTodoStore = defineStore('todo', {
                 console.error('Error fetching user todo list:', error);
             }
         },
-        isLoggedIn() {
-            return useUserStore().isLoggedIn;
-        },
-        uid() {
-            return useUserStore().uid;
-        }
-    },
-    actions: {
         async addTodo() {
             if (this.newItem.trim() === '') return;
 
@@ -110,15 +110,6 @@ export const useTodoStore = defineStore('todo', {
             } catch (error) {
                 console.error('Error clearing completed items:', error);
             }
-        },
-        showAll() {
-            this.todos = this.allItems;
-        },
-        showActive() {
-            this.todos = this.activeItems;
-        },
-        showCompleted() {
-            this.todos = this.completedItems;
         },
         async addToFirestore(newTodo) {
             try {
