@@ -1,11 +1,9 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-
 import App from './App.vue';
 import router from './router';
-
+import i18n, { loadLocaleMessages, SUPPORT_LOCALES } from './i18n';
 import './assets/main.css';
-
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -20,14 +18,18 @@ const firebaseConfig = {
 };
 
 const db = getFirestore(initializeApp(firebaseConfig));
-
 const storage = getStorage(initializeApp(firebaseConfig));
 
-const app = createApp(App);
+async function bootstrap() {
+    await Promise.all(SUPPORT_LOCALES.map((locale) => loadLocaleMessages(i18n, locale)));
 
-app.use(createPinia());
-app.use(router);
+    const app = createApp(App);
+    app.use(createPinia());
+    app.use(router);
+    app.use(i18n);
+    app.mount('#app');
+}
 
-app.mount('#app');
+bootstrap();
 
 export { db, storage };

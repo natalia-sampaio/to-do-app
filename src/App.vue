@@ -56,7 +56,7 @@ watch(
         <header class="p-4 sm:p-8 bg-neutral">
             <div class="lg:max-w-3xl mx-auto">
                 <div class="my-8 flex items-center justify-between">
-                    <div class="flex gap-4">
+                    <div class="flex items-center gap-4">
                         <h1 class="font-bold text-2xl">T O D O</h1>
                         <label class="swap swap-rotate">
                             <input
@@ -69,6 +69,15 @@ watch(
 
                             <IconMoon class="swap-on h-7 w-7" />
                         </label>
+                        <select class="select select-ghost max-w-xs" v-model="$i18n.locale">
+                            <option
+                                v-for="locale in $i18n.availableLocales"
+                                :key="`locale-${locale}`"
+                                :value="locale"
+                            >
+                                {{ locale }}
+                            </option>
+                        </select>
                     </div>
                     <SlideFade>
                         <component
