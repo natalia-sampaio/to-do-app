@@ -1,6 +1,7 @@
 <script setup>
 import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
+import IconAdd from './components/icons/IconAdd.vue';
 import { useTodoStore } from './stores/todo.js';
 import { ref, shallowRef, watch } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
@@ -78,7 +79,10 @@ watch(
                     </SlideFade>
                 </div>
                 <div class="input p-4 mb-6 w-full flex items-center justify-start">
-                    <input type="checkbox" class="checkbox checkbox-xs" aria-label="checkbox" />
+                    <IconAdd
+                        class="h-6 w-6 hover:text-primary cursor-pointer"
+                        @click="todoStore.addTodo()"
+                    />
                     <input
                         v-model="todoStore.newItem"
                         @blur="todoStore.addTodo()"

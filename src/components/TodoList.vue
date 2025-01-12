@@ -2,7 +2,7 @@
 import TodoFooter from '../components/TodoFooter.vue';
 import TodoItem from '../components/TodoItem.vue';
 import { useTodoStore } from '../stores/todo.js';
-import { computed, watch } from 'vue';
+import { computed, watchEffect } from 'vue';
 
 const todoStore = useTodoStore();
 
@@ -21,14 +21,13 @@ const toggleTodoStatus = (id) => {
     todoStore.updateCompleted(id);
 };
 
-watch(
-    () => todoStore.isLoggedIn,
-    (isLoggedIn) => {
-        if (isLoggedIn) {
-            todoStore.fetchUserTodoList();
-        }
+watchEffect(async () => {
+    if (todoStore.isLoggedIn) {
+        await todoStore.fetchUserTodoList();
+    } else {
+        todoStore.resetStore();
     }
-);
+});
 </script>
 
 <template>

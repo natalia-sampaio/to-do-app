@@ -29,8 +29,13 @@ export const useTodoStore = defineStore('todo', {
     },
     actions: {
         async fetchUserTodoList() {
-            if (!this.isLoggedIn || !this.uid) return;
-
+            if (this.isLoggedIn || this.uid) {
+                await this.fetchFromFirestore();
+            } else {
+                this.fetchFromLocalStorage();
+            }
+        },
+        async fetchFromFirestore() {
             try {
                 const docRef = doc(db, this.uid, 'todo-list');
                 const docSnap = await getDoc(docRef);
@@ -53,6 +58,16 @@ export const useTodoStore = defineStore('todo', {
                 console.error('Error fetching user todo list:', error);
             }
         },
+        fetchFromLocalStorage() {
+            const items = JSON.parse(localStorage.getItem('todo-list') || '[]');
+            this.updateLocalState(items);
+        },
+        updateLocalState(items) {
+            this.allItems = items;
+            this.activeItems = items.filter((item) => !item.checked);
+            this.completedItems = items.filter((item) => item.checked);
+            this.todos = [...this.allItems];
+        },
         async addTodo() {
             if (this.newItem.trim() === '') return;
 
@@ -62,13 +77,14 @@ export const useTodoStore = defineStore('todo', {
                 checked: false
             };
 
-            try {
+            this.allItems.push(newTodo);
+            this.activeItems.push(newTodo);
+            this.todos = [...this.allItems];
+
+            if (this.isLoggedIn && this.uid) {
                 await this.addToFirestore(newTodo);
-                this.allItems.push(newTodo);
-                this.activeItems.push(newTodo);
-                this.todos = [...this.allItems];
-            } catch (error) {
-                console.error('Error adding todo:', error);
+            } else {
+                this.saveToLocalStorage();
             }
 
             this.newItem = '';
@@ -102,10 +118,8 @@ export const useTodoStore = defineStore('todo', {
                 this.completedItems = [];
                 this.activeItems = this.allItems.filter((item) => !item.checked);
 
-                // Update Firestore
                 await this.updateFirestore(this.allItems);
 
-                // Update displayed todos
                 this.todos = [...this.allItems];
             } catch (error) {
                 console.error('Error clearing completed items:', error);
@@ -137,13 +151,21 @@ export const useTodoStore = defineStore('todo', {
                 console.error('Error updating Firestore:', error);
             }
         },
+        saveToLocalStorage() {
+            localStorage.setItem('todo-list', JSON.stringify(this.allItems));
+        },
         resetStore() {
-            this.todos = [];
-            this.allItems = [];
-            this.activeItems = [];
-            this.completedItems = [];
-            this.newItem = '';
-            this.filter = 'all';
+            const storedItems = JSON.parse(localStorage.getItem('todo-list') || 'null');
+            if (storedItems && Array.isArray(storedItems)) {
+                this.updateLocalState(storedItems);
+            } else {
+                this.todos = [];
+                this.allItems = [];
+                this.activeItems = [];
+                this.completedItems = [];
+                this.newItem = '';
+                this.filter = 'all';
+            }
         }
     }
 });

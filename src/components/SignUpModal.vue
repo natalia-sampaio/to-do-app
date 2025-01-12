@@ -60,7 +60,7 @@ async function submitForm() {
                 userStore.name = formData.name;
                 userStore.email = data.user.email;
                 userStore.uid = data.user.uid;
-                userStore.addToFirestore();
+                userStore.addTodo();
 
                 //router.push('/logged-in');
             })
@@ -85,7 +85,7 @@ function signInWithGoogle() {
             userStore.email = result.user.email;
             userStore.name = result.user.displayName;
             userStore.uid = result.user.uid;
-            userStore.addToFirestore();
+            userStore.addTodo();
             //router.push('/logged-in');
         })
         .catch((error) => {
