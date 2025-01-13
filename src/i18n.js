@@ -3,7 +3,13 @@ import { createI18n } from 'vue-i18n';
 
 export const SUPPORT_LOCALES = ['pt', 'en'];
 
-export function setupI18n(options = { locale: 'pt' }) {
+export function detectBrowserLanguage() {
+    const browserLanguage = navigator.language || 'en';
+    const language = browserLanguage.split('-')[0];
+    return SUPPORT_LOCALES.includes(language) ? language : 'en';
+}
+
+export function setupI18n(options = { locale: detectBrowserLanguage() }) {
     const i18n = createI18n({
         ...options,
         availableLocales: SUPPORT_LOCALES
@@ -35,4 +41,5 @@ export async function loadLocaleMessages(i18n, locale) {
     }
 }
 
-export default setupI18n({ locale: 'en' });
+// Automatically detect the user's language
+export default setupI18n();
