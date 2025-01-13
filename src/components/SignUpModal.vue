@@ -125,7 +125,7 @@ watch(
 </script>
 
 <template>
-    <label for="signup-modal" class="btn btn-primary btn-outline">sign up</label>
+    <label for="signup-modal" class="btn btn-primary btn-outline">{{ $t('header.signUp') }}</label>
     <input type="checkbox" id="signup-modal" class="modal-toggle" />
     <div class="modal modal-bottom sm:modal-middle" role="dialog">
         <div class="modal-box">
@@ -137,12 +137,14 @@ watch(
             </label>
             <div class="form-control w-full">
                 <label class="label">
-                    <span class="label-text">Name</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.name')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.name"
                     type="text"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.name')"
                     class="input input-bordered w-full"
                     aria-label="name input"
                 />
@@ -150,12 +152,14 @@ watch(
                     error.$message
                 }}</label>
                 <label class="label">
-                    <span class="label-text">Email</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.email')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.email"
                     type="text"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.email')"
                     class="input input-bordered w-full"
                     aria-label="email input"
                 />
@@ -167,12 +171,14 @@ watch(
                 </label>
 
                 <label class="label">
-                    <span class="label-text">Password</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.password')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.password"
                     type="password"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.password')"
                     class="input input-bordered w-full"
                     aria-label="password input"
                 />
@@ -180,12 +186,14 @@ watch(
                     >{{ error.$message }}
                 </label>
                 <label class="label">
-                    <span class="label-text">Confirm password</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.confirmPassword')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.confirmPassword"
                     type="password"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.password')"
                     class="input input-bordered w-full"
                     aria-label="password input"
                 />
@@ -196,11 +204,15 @@ watch(
                     >{{ error.$message }}
                 </label>
             </div>
-            <div class="modal-action justify-between">
-                <label for="signup-modal" class="btn" @click="signInWithGoogle"
-                    >Sign up with Google</label
-                >
-                <label class="btn" @click="submitForm">Sign up with email</label>
+            <div class="modal-action">
+                <div class="flex flex-col w-full gap-4">
+                    <label class="btn" @click="submitForm">{{
+                        $t('signUpModal.signUpWithEmail')
+                    }}</label>
+                    <label for="signup-modal" class="btn" @click="signInWithGoogle">{{
+                        $t('signUpModal.signUpWithGoogle')
+                    }}</label>
+                </div>
             </div>
         </div>
     </div>

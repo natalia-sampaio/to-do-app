@@ -1,11 +1,12 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import { useTodoStore } from '../stores/todo';
 import { computed, ref } from 'vue';
 
 const todoStore = useTodoStore();
+const { t } = useI18n();
 
 defineProps({
-    numberOfUncheckedItems: Number,
     todoLength: Number
 });
 
@@ -15,7 +16,7 @@ const selectedFilter = ref('all');
 
 const filterOptions = computed(() => [
     {
-        label: 'All',
+        label: t('todoFooter.filters.all'),
         value: 'all',
         peerClass: 'peer/all',
         peerCheckedClass: 'peer-checked/all:text-primary',
@@ -23,21 +24,21 @@ const filterOptions = computed(() => [
         peerDisabledClass: 'peer-disabled/all:opacity-30 peer-disabled/all:cursor-not-allowed'
     },
     {
-        label: 'Active',
-        value: 'active',
-        peerClass: 'peer/active',
-        peerCheckedClass: 'peer-checked/active:text-primary',
-        disabled: todoStore.activeItems.length === 0,
-        peerDisabledClass: 'peer-disabled/active:opacity-30 peer-disabled/active:cursor-not-allowed'
+        label: t('todoFooter.filters.notDone'),
+        value: 'notDone',
+        peerClass: 'peer/notDone',
+        peerCheckedClass: 'peer-checked/notDone:text-primary',
+        disabled: todoStore.notDoneItems.length === 0,
+        peerDisabledClass:
+            'peer-disabled/notDone:opacity-30 peer-disabled/notDone:cursor-not-allowed'
     },
     {
-        label: 'Completed',
-        value: 'completed',
-        peerClass: 'peer/completed',
-        peerCheckedClass: 'peer-checked/completed:text-primary',
-        disabled: todoStore.completedItems.length === 0,
-        peerDisabledClass:
-            'peer-disabled/completed:opacity-30 peer-disabled/completed:cursor-not-allowed'
+        label: t('todoFooter.filters.done'),
+        value: 'done',
+        peerClass: 'peer/done',
+        peerCheckedClass: 'peer-checked/done:text-primary',
+        disabled: todoStore.doneItems.length === 0,
+        peerDisabledClass: 'peer-disabled/done:opacity-30 peer-disabled/done:cursor-not-allowed'
     }
 ]);
 
@@ -55,8 +56,13 @@ function handleClearCompleted() {
 </script>
 
 <template>
-    <div v-if="todoLength > 0" class="flex items-center justify-between p-4 rounded-b-[inherit]">
-        <span>{{ numberOfUncheckedItems }} items left</span>
+    <div
+        v-if="todoStore.todoLength > 0"
+        class="flex items-center justify-between p-4 rounded-b-[inherit]"
+    >
+        <span class="first-letter:capitalize">{{
+            $t('todoFooter.itemsLeft', { count: todoStore.numberOfUncheckedItems })
+        }}</span>
         <div v-if="filterOptions.length" class="flex gap-4">
             <template v-for="option in filterOptions" :key="option.value">
                 <input
@@ -72,7 +78,7 @@ function handleClearCompleted() {
                 <label
                     :for="option.value"
                     :class="
-                        'sm:p-2 cursor-pointer ' +
+                        'sm:p-2 cursor-pointer first-letter:capitalize ' +
                         option.peerCheckedClass +
                         ' ' +
                         option.peerDisabledClass
@@ -84,10 +90,10 @@ function handleClearCompleted() {
         </div>
         <button
             @click="handleClearCompleted"
-            class="hover:link-hover disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:no-underline"
-            :disabled="todoStore.completedItems.length === 0"
+            class="hover:link-hover disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:no-underline first-letter:capitalize"
+            :disabled="todoStore.doneItems.length === 0"
         >
-            Clear Completed
+            {{ $t('todoFooter.clearDone', { count: todoStore.doneItems.length }) }}
         </button>
     </div>
 </template>

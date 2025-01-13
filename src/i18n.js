@@ -35,4 +35,4 @@ export async function loadLocaleMessages(i18n, locale) {
     }
 }
 
-export default setupI18n({ locale: 'pt' });
+export default setupI18n({ locale: 'en' });

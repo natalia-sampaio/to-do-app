@@ -45,16 +45,17 @@ async function submitForm() {
                 router.push('/logged-in');
             })
             .catch((error) => {
-                animateButton();
-                if (error.code == 'auth/user-not-found') {
-                    $externalResults.value = { email: 'User not found, please register.' };
-                }
-                if (error.code == 'auth/wrong-password') {
-                    $externalResults.value = { email: 'User and/or password are incorrect' };
+                //alert(error.message);
+                //animateButton();
+                if (error.message == 'Firebase: Error (auth/invalid-credential).') {
+                    $externalResults.value = {
+                        email: 'User and/or password are incorrect',
+                        password: 'User and/or password are incorrect'
+                    };
                 }
             });
     } else {
-        animateButton();
+        //animateButton();
         router.push('/sign-in');
     }
 }
@@ -66,28 +67,29 @@ function signInWithGoogle() {
             router.push('/logged-in');
         })
         .catch((error) => {
-            animateButton();
-            if (error.code == 'auth/user-not-found') {
+            //animateButton();
+            alert(error.message);
+            /* if (error.code == 'auth/user-not-found') {
                 $externalResults.value = { email: 'User not found, please register.' };
             }
             if (error.code == 'auth/wrong-password') {
-                $externalResults.value = { email: 'User and/or password are incorrect' };
-            }
+                $externalResults.value = { password: 'User and/or password are incorrect' };
+            } */
         });
 }
 
-const warn = ref(false);
+/* const warn = ref(false);
 
 function animateButton() {
     warn.value = true;
     setTimeout(() => {
         warn.value = false;
     }, 1500);
-}
+} */
 </script>
 
 <template>
-    <label for="signin-modal" class="btn btn-primary">sign in</label>
+    <label for="signin-modal" class="btn btn-primary">{{ $t('header.signIn') }}</label>
     <input type="checkbox" id="signin-modal" class="modal-toggle" />
     <div class="modal modal-bottom sm:modal-middle" role="dialog">
         <div class="modal-box">
@@ -99,12 +101,14 @@ function animateButton() {
             </label>
             <div class="form-control w-full">
                 <label class="label">
-                    <span class="label-text">Email</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.email')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.email"
                     type="text"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.email')"
                     class="input input-bordered w-full"
                     aria-label="name input"
                 />
@@ -115,13 +119,18 @@ function animateButton() {
                 >
                     {{ error.$message }}
                 </label>
+                <label v-if="$externalResults.email" class="text-error">
+                    {{ $externalResults.email }}
+                </label>
                 <label class="label">
-                    <span class="label-text">Password</span>
+                    <span class="label-text first-letter:capitalize">{{
+                        $t('inputLabels.password')
+                    }}</span>
                 </label>
                 <input
                     v-model="formData.password"
                     type="password"
-                    placeholder="Type here"
+                    :placeholder="$t('placeholders.password')"
                     class="input input-bordered w-full"
                     aria-label="password input"
                 />
@@ -132,12 +141,19 @@ function animateButton() {
                 >
                     {{ error.$message }}
                 </label>
+                <label v-if="$externalResults.password" class="text-error">
+                    {{ $externalResults.password }}
+                </label>
             </div>
-            <div class="modal-action justify-between">
-                <label for="signin-modal" class="btn" @click="signInWithGoogle"
-                    >Sign in with Google</label
-                >
-                <label class="btn" @click="submitForm">Sign in with email</label>
+            <div class="modal-action">
+                <div class="w-full flex flex-col gap-4">
+                    <label class="btn w-full" @click="submitForm">{{
+                        $t('signInModal.signInWithEmail')
+                    }}</label>
+                    <label class="btn w-full" @click="signInWithGoogle">{{
+                        $t('signInModal.signInWithGoogle')
+                    }}</label>
+                </div>
             </div>
         </div>
     </div>

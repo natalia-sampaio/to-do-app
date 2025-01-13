@@ -1,1 +1,64 @@
-{ "message": { "hello": "Hello" } }
+{
+    "header": {
+        "hello": "hello",
+        "guest": "{hello}, guest",
+        "signIn": "sign in",
+        "signUp": "sign up"
+    },
+    "warningModal": {
+        "title": "Important Notice",
+        "content": "This web app is currently {0} and is exclusively {1}.",
+        "list": {
+            "noSecurity": {
+                "title": "No security:",
+                "content": "Firebase is configured for development; data may not be secure."
+            },
+            "noSensitiveData": {
+                "title": "Do not use sensitive data:",
+                "content": "Avoid storing personal or private information. Users are encouraged to create an account using any invalid or fake email address."
+            },
+            "workInProgress": {
+                "title": "Work in progress:",
+                "content": "Features are incomplete and bugs are expected."
+            },
+            "testEnvironment": {
+                "title": "Test environment:",
+                "content": "This application is for learning purposes only, not for production use."
+            }
+        },
+        "warningText": "By continuing, you acknowledge that you are proceeding at your own risk.",
+        "checkbox": "I agree",
+        "closeButton": "close"
+    },
+    "signInModal": {
+        "signInWithGoogle": "sign in with Google",
+        "signInWithEmail": "sign in with e-mail and password"
+    },
+    "signUpModal": {
+        "signUpWithGoogle": "sign up with Google",
+        "signUpWithEmail": "sign up with e-mail and password"
+    },
+    "placeholders": {
+        "createNewTodo": "Create new item...",
+        "email": "e.g. account{'@'}domain.com",
+        "password": "••••••••",
+        "name": "Your name",
+        "development": "under development",
+        "academic": "for academic purposes"
+    },
+    "inputLabels": {
+        "email": "e-mail",
+        "password": "password",
+        "confirmPassword": "confirm password",
+        "name": "name"
+    },
+    "todoFooter": {
+        "itemsLeft": "no items to do | {count} item to do | {count} items to do",
+        "filters": {
+            "all": "all",
+            "notDone": "to do",
+            "done": "done"
+        },
+        "clearDone": "no items to delete | delete done item | delete done items"
+    }
+}

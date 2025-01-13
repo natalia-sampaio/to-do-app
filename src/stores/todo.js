@@ -8,17 +8,17 @@ export const useTodoStore = defineStore('todo', {
         return {
             todos: [],
             allItems: [],
-            activeItems: [],
-            completedItems: [],
+            notDoneItems: [],
+            doneItems: [],
             newItem: '',
             filter: 'all'
         };
     },
     getters: {
         todoLength: (state) => state.allItems.length,
-        completedLength: (state) => state.completedItems.length,
+        doneLength: (state) => state.doneItems.length,
         numberOfUncheckedItems() {
-            return this.todoLength - this.completedLength;
+            return this.todoLength - this.doneLength;
         },
         isLoggedIn() {
             return useUserStore().isLoggedIn;
@@ -44,15 +44,15 @@ export const useTodoStore = defineStore('todo', {
                     const { items } = docSnap.data();
                     if (items && Array.isArray(items)) {
                         this.allItems = items;
-                        this.activeItems = items.filter((item) => !item.checked);
-                        this.completedItems = items.filter((item) => item.checked);
+                        this.notDoneItems = items.filter((item) => !item.checked);
+                        this.doneItems = items.filter((item) => item.checked);
                         this.todos = [...this.allItems];
                     }
                 } else {
                     this.todos = [];
                     this.allItems = [];
-                    this.activeItems = [];
-                    this.completedItems = [];
+                    this.notDoneItems = [];
+                    this.doneItems = [];
                 }
             } catch (error) {
                 console.error('Error fetching user todo list:', error);
@@ -64,8 +64,8 @@ export const useTodoStore = defineStore('todo', {
         },
         updateLocalState(items) {
             this.allItems = items;
-            this.activeItems = items.filter((item) => !item.checked);
-            this.completedItems = items.filter((item) => item.checked);
+            this.notDoneItems = items.filter((item) => !item.checked);
+            this.doneItems = items.filter((item) => item.checked);
             this.todos = [...this.allItems];
         },
         async addTodo() {
@@ -78,7 +78,7 @@ export const useTodoStore = defineStore('todo', {
             };
 
             this.allItems.push(newTodo);
-            this.activeItems.push(newTodo);
+            this.notDoneItems.push(newTodo);
             this.todos = [...this.allItems];
 
             if (this.isLoggedIn && this.uid) {
@@ -98,11 +98,11 @@ export const useTodoStore = defineStore('todo', {
                 item.checked = !item.checked;
 
                 if (item.checked) {
-                    this.completedItems.push(item);
-                    this.activeItems = this.activeItems.filter((i) => i.id !== id);
+                    this.doneItems.push(item);
+                    this.notDoneItems = this.notDoneItems.filter((i) => i.id !== id);
                 } else {
-                    this.activeItems.push(item);
-                    this.completedItems = this.completedItems.filter((i) => i.id !== id);
+                    this.notDoneItems.push(item);
+                    this.doneItems = this.doneItems.filter((i) => i.id !== id);
                 }
 
                 await this.updateFirestore(this.allItems);
@@ -115,8 +115,8 @@ export const useTodoStore = defineStore('todo', {
         async clearCompleted() {
             try {
                 this.allItems = this.allItems.filter((item) => !item.checked);
-                this.completedItems = [];
-                this.activeItems = this.allItems.filter((item) => !item.checked);
+                this.doneItems = [];
+                this.notDoneItems = this.allItems.filter((item) => !item.checked);
 
                 await this.updateFirestore(this.allItems);
 
@@ -161,8 +161,8 @@ export const useTodoStore = defineStore('todo', {
             } else {
                 this.todos = [];
                 this.allItems = [];
-                this.activeItems = [];
-                this.completedItems = [];
+                this.notDoneItems = [];
+                this.doneItems = [];
                 this.newItem = '';
                 this.filter = 'all';
             }

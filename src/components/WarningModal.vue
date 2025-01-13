@@ -6,37 +6,40 @@ const isChecked = ref(false);
 
 const emit = defineEmits(['closeModal']);
 </script>
+
 <template>
     <div class="modal modal-open">
         <div class="modal-box">
             <h3 class="font-bold text-lg flex gap-4 border-b border-warning">
-                <IconWarning class="h-6 w-6 text-warning" /> Important Notice
+                <IconWarning class="h-6 w-6 text-warning" />
+                {{ $t('warningModal.title') }}
             </h3>
             <p class="py-4">
-                This Todo Web App is currently <strong>under development</strong> and is intended
-                for <strong>academic purposes only</strong>.
+                <i18n-t keypath="warningModal.content" tag="span" scope="global">
+                    <strong>{{ $t('placeholders.development') }}</strong>
+                    <strong>{{ $t('placeholders.academic') }}</strong>
+                </i18n-t>
             </p>
-            <ul class="list-disc list-inside py-2 border-b border-warning">
+            <ul class="list-disc list-inside pb-4 border-b border-warning">
                 <li>
-                    <strong>No Security:</strong> Firebase is configured for development; data may
-                    not be secure.
+                    <strong>{{ $t('warningModal.list.noSecurity.title') }}</strong>
+                    {{ $t('warningModal.list.noSecurity.content') }}
                 </li>
                 <li>
-                    <strong>Do not use sensitive data:</strong> Avoid storing personal or private
-                    information. Users are encouraged to create an account using any invalid or fake
-                    email address.
+                    <strong>{{ $t('warningModal.list.noSensitiveData.title') }}</strong>
+                    {{ $t('warningModal.list.noSensitiveData.content') }}
                 </li>
                 <li>
-                    <strong>Work in progress:</strong> Features are incomplete and bugs are
-                    expected.
+                    <strong>{{ $t('warningModal.list.workInProgress.title') }}</strong>
+                    {{ $t('warningModal.list.workInProgress.content') }}
                 </li>
                 <li>
-                    <strong>Test environment:</strong> This app is for learning purposes only, not
-                    production use.
+                    <strong>{{ $t('warningModal.list.testEnvironment.title') }}</strong>
+                    {{ $t('warningModal.list.testEnvironment.content') }}
                 </li>
             </ul>
             <p class="py-2 text-warning font-bold">
-                By continuing, you acknowledge that you are proceeding at your own risk.
+                {{ $t('warningModal.warningText') }}
             </p>
             <label class="label cursor-pointer gap-4 w-fit">
                 <input
@@ -45,7 +48,7 @@ const emit = defineEmits(['closeModal']);
                     checked="checked"
                     class="checkbox checkbox-warning"
                 />
-                <span class="label-text">I Understand</span>
+                <span class="label-text">{{ $t('warningModal.checkbox') }}</span>
             </label>
 
             <div class="modal-action">
@@ -55,7 +58,7 @@ const emit = defineEmits(['closeModal']);
                         :disabled="!isChecked"
                         @click="emit('closeModal')"
                     >
-                        close
+                        {{ $t('warningModal.closeButton') }}
                     </button>
                 </form>
             </div>

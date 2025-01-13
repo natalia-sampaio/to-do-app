@@ -8,10 +8,10 @@ const todoStore = useTodoStore();
 
 const filteredTodos = computed(() => {
     switch (todoStore.filter) {
-        case 'active':
-            return todoStore.allItems.filter((item) => !item.checked);
-        case 'completed':
-            return todoStore.allItems.filter((item) => item.checked);
+        case 'notDone':
+            return todoStore.notDoneItems;
+        case 'done':
+            return todoStore.doneItems;
         default:
             return todoStore.allItems;
     }
@@ -43,11 +43,7 @@ watchEffect(async () => {
                         :checked="todo.checked"
                         @change="toggleTodoStatus(todo.id)"
                     />
-                    <TodoFooter
-                        :numberOfUncheckedItems="todoStore.numberOfUncheckedItems"
-                        :todoLength="todoStore.todoLength"
-                        @filterChange="(value) => (todoStore.filter = value)"
-                    />
+                    <TodoFooter @filterChange="(value) => (todoStore.filter = value)" />
                 </div>
             </div>
         </div>

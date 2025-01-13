@@ -10,7 +10,9 @@ defineProps({
 <template>
     <div class="flex gap-4 items-center">
         <Suspense>
-            <span class="text-xl"> Olá, {{ name }} </span>
+            <span class="text-xl first-letter:capitalize">
+                {{ $t('header.hello') }}, {{ name }}
+            </span>
             <template #fallback> Loading... </template>
         </Suspense>
 

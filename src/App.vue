@@ -97,7 +97,7 @@ watch(
                         @blur="todoStore.addTodo()"
                         @keyup.enter="todoStore.addTodo()"
                         type="text"
-                        placeholder="Create a new todo..."
+                        :placeholder="$t('placeholders.createNewTodo')"
                         aria-label="Create a new task"
                         class="input w-full focus:outline-none"
                     />

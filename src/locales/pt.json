@@ -1,1 +1,64 @@
-{ "message": { "hello": "Olá" } }
+{
+    "header": {
+        "hello": "olá",
+        "guest": "{hello}, visitante",
+        "signIn": "entrar",
+        "signUp": "criar conta"
+    },
+    "warningModal": {
+        "title": "Aviso Importante",
+        "content": "Este aplicativo está atualmente {0} e se destina apenas {1}.",
+        "list": {
+            "noSecurity": {
+                "title": "Sem segurança:",
+                "content": "o Firebase está configurado para desenvolvimento; os dados podem não estar seguros."
+            },
+            "noSensitiveData": {
+                "title": "Não use dados sensíveis:",
+                "content": "Evite armazenar informações pessoais ou privadas. Os usuários são encorajados a criar uma conta usando qualquer endereço de e-mail inválido ou falso."
+            },
+            "workInProgress": {
+                "title": "Trabalho em andamento:",
+                "content": "os recursos estão incompletos e são esperados bugs."
+            },
+            "testEnvironment": {
+                "title": "Ambiente de teste:",
+                "content": "este aplicativo é apenas para fins de aprendizado, não para uso em produção."
+            }
+        },
+        "warningText": "Ao continuar, você reconhece que está procedendo por sua conta e risco.",
+        "checkbox": "Eu concordo",
+        "closeButton": "fechar"
+    },
+    "signInModal": {
+        "signInWithGoogle": "entrar com Google",
+        "signInWithEmail": "entrar com e-mail e senha"
+    },
+    "signUpModal": {
+        "signUpWithGoogle": "criar conta com Google",
+        "signUpWithEmail": "criar conta com e-mail e senha"
+    },
+    "placeholders": {
+        "createNewTodo": "Criar novo item...",
+        "email": "ex. casimiro{'@'}silva.com",
+        "password": "••••••••",
+        "name": "Seu nome",
+        "development": "em desenvolvimento",
+        "academic": "para uso acadêmico"
+    },
+    "inputLabels": {
+        "email": "e-mail",
+        "password": "senha",
+        "confirmPassword": "confirmar senha",
+        "name": "nome"
+    },
+    "todoFooter": {
+        "itemsLeft": "nenhum item a fazer | {count} item a fazer | {count} items a fazer",
+        "filters": {
+            "all": "todos",
+            "notDone": "a fazer",
+            "done": "feitos"
+        },
+        "clearDone": "nenhum item para deletar | deletar item feito | deletar itens feitos"
+    }
+}
