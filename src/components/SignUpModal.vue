@@ -12,6 +12,9 @@ import {
     signInWithPopup,
     updateProfile
 } from 'firebase/auth';
+import IconUser from './icons/IconUser.vue';
+import IconEmail from './icons/IconEmail.vue';
+import IconKey from './icons/IconKey.vue';
 
 const userStore = useUserStore();
 
@@ -135,74 +138,73 @@ watch(
             >
                 ✕
             </label>
-            <div class="form-control w-full">
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.name')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.name"
-                    type="text"
-                    :placeholder="$t('placeholders.name')"
-                    class="input input-bordered w-full"
-                    aria-label="name input"
-                />
-                <label v-for="error in v$.name.$errors" :key="error.$uid" class="text-error">{{
-                    error.$message
-                }}</label>
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.email')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.email"
-                    type="text"
-                    :placeholder="$t('placeholders.email')"
-                    class="input input-bordered w-full"
-                    aria-label="email input"
-                />
-                <label v-for="error in v$.email.$errors" :key="error.$uid" class="text-error"
-                    >{{ error.$message }}
-                </label>
-                <label v-if="$externalResults.email" class="text-error">
-                    {{ $externalResults.email }}
-                </label>
-
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.password')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.password"
-                    type="password"
-                    :placeholder="$t('placeholders.password')"
-                    class="input input-bordered w-full"
-                    aria-label="password input"
-                />
-                <label v-for="error in v$.password.$errors" :key="error.$uid" class="text-error"
-                    >{{ error.$message }}
-                </label>
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.confirmPassword')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.confirmPassword"
-                    type="password"
-                    :placeholder="$t('placeholders.password')"
-                    class="input input-bordered w-full"
-                    aria-label="password input"
-                />
-                <label
-                    v-for="error in v$.confirmPassword.$errors"
-                    :key="error.$uid"
-                    class="text-error"
-                    >{{ error.$message }}
-                </label>
+            <div class="form-control w-full flex flex-col gap-6 mt-6">
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconUser />
+                        <input
+                            v-model="formData.name"
+                            type="text"
+                            class="grow bg-[inherit] focus:outline-none"
+                            :placeholder="$t('placeholders.name')"
+                            aria-label="name input"
+                        />
+                    </label>
+                    <label v-for="error in v$.name.$errors" :key="error.$uid" class="text-error">
+                        {{ error.$message }}
+                    </label>
+                </div>
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconEmail />
+                        <input
+                            v-model="formData.email"
+                            type="text"
+                            class="grow bg-inherit focus:outline-none"
+                            :placeholder="$t('placeholders.email')"
+                            aria-label="email input"
+                        />
+                    </label>
+                    <label v-for="error in v$.email.$errors" :key="error.$uid" class="text-error"
+                        >{{ error.$message }}
+                    </label>
+                    <label v-if="$externalResults.email" class="text-error">
+                        {{ $externalResults.email }}
+                    </label>
+                </div>
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconKey />
+                        <input
+                            v-model="formData.password"
+                            type="password"
+                            class="grow bg-inherit focus:outline-none"
+                            :placeholder="$t('placeholders.password')"
+                            aria-label="password input"
+                        />
+                    </label>
+                    <label v-for="error in v$.password.$errors" :key="error.$uid" class="text-error"
+                        >{{ error.$message }}
+                    </label>
+                </div>
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconKey />
+                        <input
+                            v-model="formData.confirmPassword"
+                            type="password"
+                            class="grow bg-inherit focus:outline-none"
+                            :placeholder="$t('placeholders.password')"
+                            aria-label="confirm password input"
+                        />
+                    </label>
+                    <label
+                        v-for="error in v$.confirmPassword.$errors"
+                        :key="error.$uid"
+                        class="text-error"
+                        >{{ error.$message }}
+                    </label>
+                </div>
             </div>
             <div class="modal-action">
                 <div class="flex flex-col w-full gap-4">
