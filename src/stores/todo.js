@@ -166,6 +166,48 @@ export const useTodoStore = defineStore('todo', {
                 this.newItem = '';
                 this.filter = 'all';
             }
+        },
+        async editTodo(id, updatedContent) {
+            try {
+                const itemIndex = this.allItems.findIndex((item) => item.id === id);
+                if (itemIndex === -1) return;
+
+                this.allItems[itemIndex].content = updatedContent;
+
+                if (this.isLoggedIn && this.uid) {
+                    await this.updateFirestore(this.allItems);
+                } else {
+                    this.saveToLocalStorage();
+                }
+
+                this.updateLocalState(this.allItems);
+            } catch (error) {
+                console.error('Error editing todo:', error);
+            }
+        },
+        async deleteItem(id) {
+            try {
+                const itemIndex = this.allItems.findIndex((item) => item.id === id);
+                if (itemIndex === -1) return;
+
+                const [removedItem] = this.allItems.splice(itemIndex, 1);
+
+                if (removedItem.checked) {
+                    this.doneItems = this.doneItems.filter((item) => item.id !== id);
+                } else {
+                    this.notDoneItems = this.notDoneItems.filter((item) => item.id !== id);
+                }
+
+                if (this.isLoggedIn && this.uid) {
+                    await this.updateFirestore(this.allItems);
+                } else {
+                    this.saveToLocalStorage();
+                }
+
+                this.todos = [...this.allItems];
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
         }
     }
 });

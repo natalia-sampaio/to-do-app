@@ -35,17 +35,40 @@ watchEffect(async () => {
         <div class="relative w-full h-screen">
             <div class="absolute -top-6 left-0 right-0 lg:max-w-3xl mx-4 sm:mx-8 lg:mx-auto">
                 <div class="card bg-base-100 shadow-xl">
-                    <TodoItem
-                        v-for="todo in filteredTodos"
-                        :key="todo.id"
-                        :content="todo.content"
-                        :id="todo.id"
-                        :checked="todo.checked"
-                        @change="toggleTodoStatus(todo.id)"
-                    />
+                    <transition-group name="fade" lass="todo-list" tag="div">
+                        <TodoItem
+                            v-for="todo in filteredTodos"
+                            :key="todo.id"
+                            :content="todo.content"
+                            :id="todo.id"
+                            :status="todo.checked"
+                            @itemChecked="toggleTodoStatus(todo.id)"
+                            @itemEdited="
+                                ({ updatedContent }) => todoStore.editTodo(todo.id, updatedContent)
+                            "
+                            @itemDeleted="todoStore.deleteItem(todo.id)"
+                        />
+                    </transition-group>
                     <TodoFooter @filterChange="(value) => (todoStore.filter = value)" />
                 </div>
             </div>
         </div>
     </Suspense>
 </template>
+<style>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.fade-leave-active {
+    position: absolute;
+}
+</style>

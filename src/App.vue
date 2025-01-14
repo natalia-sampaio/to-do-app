@@ -101,7 +101,7 @@ function handleLocaleChange(newLocale) {
                         />
                     </SlideFade>
                 </div>
-                <div class="input p-4 mb-6 w-full flex items-center justify-start">
+                <label class="input flex items-center gap-2 mb-6">
                     <IconAdd
                         class="h-6 w-6 hover:text-primary cursor-pointer"
                         @click="todoStore.addTodo()"
@@ -111,11 +111,11 @@ function handleLocaleChange(newLocale) {
                         @blur="todoStore.addTodo()"
                         @keyup.enter="todoStore.addTodo()"
                         type="text"
+                        class="grow bg-inherit focus:outline-none"
                         :placeholder="$t('placeholders.createNewTodo')"
                         aria-label="Create a new task"
-                        class="input w-full focus:outline-none"
                     />
-                </div>
+                </label>
             </div>
         </header>
         <TodoList />
