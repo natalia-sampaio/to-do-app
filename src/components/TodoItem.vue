@@ -40,7 +40,7 @@ function handleDragEnd() {
 
 <template>
     <div
-        class="p-4 group hover:bg-accent flex items-center justify-between border-b border-accent first-of-type:rounded-t-[inherit]"
+        class="p-4 group hover:bg-accent flex items-center justify-between border-b border-accent first-of-type:rounded-t-[var(--rounded-box)]"
         draggable="true"
         @dragstart="handleDragStart"
         @dragend="handleDragEnd"
