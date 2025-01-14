@@ -60,5 +60,10 @@
             "done": "done"
         },
         "clearDone": "no items to delete | delete done item | delete done items"
+    },
+    "tooltips": {
+        "delete": "Delete item",
+        "edit": "Edit item",
+        "dragToReorder": "Drag to reorder"
     }
 }

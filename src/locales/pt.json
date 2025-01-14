@@ -60,5 +60,10 @@
             "done": "feitos"
         },
         "clearDone": "nenhum item para deletar | deletar item feito | deletar itens feitos"
+    },
+    "tooltips": {
+        "delete": "Deletar item",
+        "edit": "Editar item",
+        "dragToReorder": "Arraste para reordenar"
     }
 }
