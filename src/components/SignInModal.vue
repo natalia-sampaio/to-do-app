@@ -10,6 +10,8 @@ import {
 } from 'firebase/auth';
 import { ref } from 'firebase/storage';
 import { useRouter } from 'vue-router';
+import IconEmail from './icons/IconEmail.vue';
+import IconKey from './icons/IconKey.vue';
 
 const formData = reactive({
     email: '',
@@ -99,51 +101,51 @@ function animateButton() {
             >
                 ✕
             </label>
-            <div class="form-control w-full">
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.email')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.email"
-                    type="text"
-                    :placeholder="$t('placeholders.email')"
-                    class="input input-bordered w-full"
-                    aria-label="name input"
-                />
-                <label
-                    class="label text-red-600"
-                    v-for="error in v$.email.$errors"
-                    :key="error.$uid"
-                >
-                    {{ error.$message }}
-                </label>
-                <label v-if="$externalResults.email" class="text-error">
-                    {{ $externalResults.email }}
-                </label>
-                <label class="label">
-                    <span class="label-text first-letter:capitalize">{{
-                        $t('inputLabels.password')
-                    }}</span>
-                </label>
-                <input
-                    v-model="formData.password"
-                    type="password"
-                    :placeholder="$t('placeholders.password')"
-                    class="input input-bordered w-full"
-                    aria-label="password input"
-                />
-                <label
-                    class="label text-red-600"
-                    v-for="error in v$.password.$errors"
-                    :key="error.$uid"
-                >
-                    {{ error.$message }}
-                </label>
-                <label v-if="$externalResults.password" class="text-error">
-                    {{ $externalResults.password }}
-                </label>
+            <div class="form-control w-full flex flex-col gap-6 mt-6">
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconEmail />
+                        <input
+                            v-model="formData.email"
+                            type="text"
+                            class="grow bg-inherit focus:outline-none"
+                            :placeholder="$t('placeholders.email')"
+                            aria-label="email input"
+                        />
+                    </label>
+                    <label
+                        class="label text-red-600"
+                        v-for="error in v$.email.$errors"
+                        :key="error.$uid"
+                    >
+                        {{ error.$message }}
+                    </label>
+                    <label v-if="$externalResults.email" class="text-error">
+                        {{ $externalResults.email }}
+                    </label>
+                </div>
+                <div>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <IconKey />
+                        <input
+                            v-model="formData.password"
+                            type="password"
+                            class="grow bg-inherit focus:outline-none"
+                            :placeholder="$t('placeholders.password')"
+                            aria-label="password input"
+                        />
+                    </label>
+                    <label
+                        class="label text-red-600"
+                        v-for="error in v$.password.$errors"
+                        :key="error.$uid"
+                    >
+                        {{ error.$message }}
+                    </label>
+                    <label v-if="$externalResults.password" class="text-error">
+                        {{ $externalResults.password }}
+                    </label>
+                </div>
             </div>
             <div class="modal-action">
                 <div class="w-full flex flex-col gap-4">
