@@ -119,6 +119,5 @@ function handleLocaleChange(newLocale) {
             </div>
         </header>
         <TodoList />
-        <WarningModal v-if="showWarning" @close-modal="showWarning = false" />
     </div>
 </template>
