@@ -1,212 +1,136 @@
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { db } from '../main';
-import { useUserStore } from './user';
+import { ethers } from 'ethers';
 
 export const useTodoStore = defineStore('todo', {
-    state: () => {
-        return {
-            todos: [],
-            allItems: [],
-            notDoneItems: [],
-            doneItems: [],
-            newItem: '',
-            filter: 'all'
-        };
-    },
+    state: () => ({
+        allItems: [],
+        newItem: '',
+        filter: 'all',
+        provider: null,
+        signer: null,
+        contract: null,
+        account: null,
+        isAddingTask: false
+    }),
     getters: {
-        todoLength: (state) => state.allItems.length,
-        doneLength: (state) => state.doneItems.length,
-        numberOfUncheckedItems() {
-            return this.todoLength - this.doneLength;
-        },
-        isLoggedIn() {
-            return useUserStore().isLoggedIn;
-        },
-        uid() {
-            return useUserStore().uid;
+        todoItems: (state) => state.allItems.filter((task) => !task.checked),
+        doneItems: (state) => state.allItems.filter((task) => task.checked),
+        filteredItems(state) {
+            switch (state.filter) {
+                case 'notDone':
+                    return state.todoItems;
+                case 'done':
+                    return state.doneItems;
+                default:
+                    return state.allItems;
+            }
         }
     },
     actions: {
-        async fetchUserTodoList() {
-            if (this.isLoggedIn || this.uid) {
-                await this.fetchFromFirestore();
-            } else {
-                this.fetchFromLocalStorage();
+        async connectWallet() {
+            if (!window.ethereum) {
+                alert('MetaMask is required!');
+                return;
             }
-        },
-        async fetchFromFirestore() {
-            try {
-                const docRef = doc(db, this.uid, 'todo-list');
-                const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const { items } = docSnap.data();
-                    if (items && Array.isArray(items)) {
-                        this.allItems = items;
-                        this.notDoneItems = items.filter((item) => !item.checked);
-                        this.doneItems = items.filter((item) => item.checked);
-                        this.todos = [...this.allItems];
-                    }
-                } else {
-                    this.todos = [];
-                    this.allItems = [];
-                    this.notDoneItems = [];
-                    this.doneItems = [];
-                }
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send('eth_requestAccounts', []);
+                const signer = await provider.getSigner();
+                const account = await signer.getAddress();
+
+                this.provider = provider;
+                this.signer = signer;
+                this.account = account;
+
+                // ✅ Contract setup
+                const contractAddress = '0x5dA4Ed23ABA289A5b4fb3dc2586D7c7dED69c0c9';
+                const abi = [
+                    'function addTask(string _content) public',
+                    'function completeTask(uint _taskId) public',
+                    'function removeTask(uint _taskId) public',
+                    'function getTasks() public view returns (tuple(uint id, string content, bool completed)[])'
+                ];
+                this.contract = new ethers.Contract(contractAddress, abi, signer);
+
+                console.log('Connected to contract:', this.contract);
+                await this.fetchTodos();
             } catch (error) {
-                console.error('Error fetching user todo list:', error);
+                console.error('Error connecting wallet:', error);
             }
         },
-        fetchFromLocalStorage() {
-            const items = JSON.parse(localStorage.getItem('todo-list') || '[]');
-            this.updateLocalState(items);
+
+        async fetchTodos() {
+            if (!this.contract) {
+                console.error('Contract not initialized.');
+                return;
+            }
+
+            try {
+                const tasks = await this.contract.getTasks();
+                this.allItems = tasks.map((task) => ({
+                    id: Number(task.id),
+                    content: task.content,
+                    checked: task.completed
+                }));
+                console.log('Fetched blockchain tasks:', this.allItems);
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
         },
-        updateLocalState(items) {
-            this.allItems = items;
-            this.notDoneItems = items.filter((item) => !item.checked);
-            this.doneItems = items.filter((item) => item.checked);
-            this.todos = [...this.allItems];
-        },
+
         async addTodo() {
-            if (this.newItem.trim() === '') return;
+            if (this.newItem.trim() === '' || this.isAddingTask) return;
+            this.isAddingTask = true;
 
-            const newTodo = {
-                id: Date.now(),
-                content: this.newItem,
-                checked: false
-            };
-
-            this.allItems.push(newTodo);
-            this.notDoneItems.push(newTodo);
-            this.todos = [...this.allItems];
-
-            if (this.isLoggedIn && this.uid) {
-                await this.addToFirestore(newTodo);
-            } else {
-                this.saveToLocalStorage();
-            }
-
-            this.newItem = '';
-        },
-        async updateCompleted(id) {
             try {
-                const itemIndex = this.allItems.findIndex((item) => item.id === id);
-                if (itemIndex === -1) return;
+                const newTodo = {
+                    id: Date.now(),
+                    content: this.newItem,
+                    checked: false
+                };
+                this.allItems.push(newTodo); // ✅ Keep local state updated
 
-                const item = this.allItems[itemIndex];
-                item.checked = !item.checked;
-
-                if (item.checked) {
-                    this.doneItems.push(item);
-                    this.notDoneItems = this.notDoneItems.filter((i) => i.id !== id);
-                } else {
-                    this.notDoneItems.push(item);
-                    this.doneItems = this.doneItems.filter((i) => i.id !== id);
+                if (this.contract) {
+                    const tx = await this.contract.addTask(this.newItem);
+                    await tx.wait();
                 }
-
-                await this.updateFirestore(this.allItems);
-
-                this.todos = [...this.allItems];
-            } catch (error) {
-                console.error('Error updating completed status:', error);
-            }
-        },
-        async clearCompleted() {
-            try {
-                this.allItems = this.allItems.filter((item) => !item.checked);
-                this.doneItems = [];
-                this.notDoneItems = this.allItems.filter((item) => !item.checked);
-
-                await this.updateFirestore(this.allItems);
-
-                this.todos = [...this.allItems];
-            } catch (error) {
-                console.error('Error clearing completed items:', error);
-            }
-        },
-        async addToFirestore(newTodo) {
-            try {
-                const docRef = doc(db, this.uid, 'todo-list');
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    await updateDoc(docRef, {
-                        items: arrayUnion(newTodo)
-                    });
-                } else {
-                    await setDoc(docRef, {
-                        items: [newTodo]
-                    });
-                }
-            } catch (error) {
-                console.error('Error adding to Firestore:', error);
-            }
-        },
-        async updateFirestore(items) {
-            try {
-                const docRef = doc(db, this.uid, 'todo-list');
-                await updateDoc(docRef, { items });
-            } catch (error) {
-                console.error('Error updating Firestore:', error);
-            }
-        },
-        saveToLocalStorage() {
-            localStorage.setItem('todo-list', JSON.stringify(this.allItems));
-        },
-        resetStore() {
-            const storedItems = JSON.parse(localStorage.getItem('todo-list') || 'null');
-            if (storedItems && Array.isArray(storedItems)) {
-                this.updateLocalState(storedItems);
-            } else {
-                this.todos = [];
-                this.allItems = [];
-                this.notDoneItems = [];
-                this.doneItems = [];
                 this.newItem = '';
-                this.filter = 'all';
-            }
-        },
-        async editTodo(id, updatedContent) {
-            try {
-                const itemIndex = this.allItems.findIndex((item) => item.id === id);
-                if (itemIndex === -1) return;
-
-                this.allItems[itemIndex].content = updatedContent;
-
-                if (this.isLoggedIn && this.uid) {
-                    await this.updateFirestore(this.allItems);
-                } else {
-                    this.saveToLocalStorage();
-                }
-
-                this.updateLocalState(this.allItems);
             } catch (error) {
-                console.error('Error editing todo:', error);
+                console.error('Error adding task:', error);
+            } finally {
+                this.isAddingTask = false;
             }
         },
+
+        async updateCompleted(id) {
+            if (!this.contract) return;
+
+            try {
+                const index = this.allItems.findIndex((task) => task.id === id);
+                if (index === -1) return;
+
+                this.allItems[index].checked = !this.allItems[index].checked;
+
+                if (this.contract) {
+                    await this.contract.completeTask(id);
+                }
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
+        },
+
         async deleteItem(id) {
+            if (!this.contract) return;
+
             try {
-                const itemIndex = this.allItems.findIndex((item) => item.id === id);
-                if (itemIndex === -1) return;
+                this.allItems = this.allItems.filter((task) => task.id !== id);
 
-                const [removedItem] = this.allItems.splice(itemIndex, 1);
-
-                if (removedItem.checked) {
-                    this.doneItems = this.doneItems.filter((item) => item.id !== id);
-                } else {
-                    this.notDoneItems = this.notDoneItems.filter((item) => item.id !== id);
+                if (this.contract) {
+                    await this.contract.removeTask(id);
                 }
-
-                if (this.isLoggedIn && this.uid) {
-                    await this.updateFirestore(this.allItems);
-                } else {
-                    this.saveToLocalStorage();
-                }
-
-                this.todos = [...this.allItems];
             } catch (error) {
-                console.error('Error deleting item:', error);
+                console.error('Error deleting task:', error);
             }
         }
     }

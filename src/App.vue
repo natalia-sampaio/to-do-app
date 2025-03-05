@@ -4,55 +4,13 @@ import IconSun from './components/icons/IconSun.vue';
 import IconMoon from './components/icons/IconMoon.vue';
 import IconAdd from './components/icons/IconAdd.vue';
 import { useTodoStore } from './stores/todo.js';
-import { ref, shallowRef, watch } from 'vue';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { useRouter } from 'vue-router';
-import { useUserStore } from './stores/user.js';
 import TodoList from './components/TodoList.vue';
-import HeaderLoggedOut from './components/header/HeaderLoggedOut.vue';
-import HeaderLoggedIn from './components/header/HeaderLoggedIn.vue';
-import SlideFade from './components/transitions/SlideFade.vue';
-import WarningModal from './components/WarningModal.vue';
+import { ref } from 'vue';
 
 const todoStore = useTodoStore();
-const userStore = useUserStore();
-
 const { locale } = useI18n();
 const dark = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-const activeHeader = shallowRef(userStore.isLoggedIn ? HeaderLoggedIn : HeaderLoggedOut);
-
 const dropdown = ref();
-const showWarning = ref(true);
-
-const router = useRouter();
-
-let auth = getAuth();
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userStore.isLoggedIn = true;
-        userStore.uid = user.uid;
-        userStore.getUserInformation;
-    } else {
-        userStore.isLoggedIn = false;
-    }
-});
-
-function handleSignOut() {
-    signOut(auth).then(() => {
-        todoStore.resetStore();
-        router.push('/');
-    });
-}
-
-watch(
-    () => userStore.isLoggedIn,
-    (isLoggedIn) => {
-        activeHeader.value = isLoggedIn ? HeaderLoggedIn : HeaderLoggedOut;
-    }
-);
-
 function handleLocaleChange(newLocale) {
     locale.value = newLocale;
 }
@@ -73,7 +31,6 @@ function handleLocaleChange(newLocale) {
                                 @change="dark = !dark"
                             />
                             <IconSun class="swap-off h-7 w-7" />
-
                             <IconMoon class="swap-on h-7 w-7" />
                         </label>
 
@@ -92,15 +49,17 @@ function handleLocaleChange(newLocale) {
                                 </li>
                             </ul>
                         </div>
+
+                        <button @click="todoStore.connectWallet()" class="btn">
+                            {{
+                                todoStore.account
+                                    ? `Connected: ${todoStore.account}`
+                                    : 'Connect Wallet'
+                            }}
+                        </button>
                     </div>
-                    <SlideFade>
-                        <component
-                            :is="activeHeader"
-                            @signOut="handleSignOut()"
-                            :name="userStore.name"
-                        />
-                    </SlideFade>
                 </div>
+
                 <label class="input flex items-center gap-2 mb-6">
                     <IconAdd
                         class="h-6 w-6 hover:text-primary cursor-pointer"
@@ -108,11 +67,10 @@ function handleLocaleChange(newLocale) {
                     />
                     <input
                         v-model="todoStore.newItem"
-                        @blur="todoStore.addTodo()"
                         @keyup.enter="todoStore.addTodo()"
                         type="text"
                         class="grow bg-inherit focus:outline-none"
-                        :placeholder="$t('placeholders.createNewTodo')"
+                        placeholder="Create a new task"
                         aria-label="Create a new task"
                     />
                 </label>
